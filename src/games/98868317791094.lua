@@ -44,7 +44,7 @@ return function(section, data)
                             plr.Character:MoveTo(workspace.ActivePlots[tostring(plr.UserId)].TeleportPoint.Position)
                             task.wait(0.5)
                         end
-                        
+
                     end
 
                     task.wait()

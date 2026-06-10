@@ -24,11 +24,13 @@ return function(section, data)
                     local br = v:FindFirstChildOfClass("Model")
                     if v.Name == "Mythical" and br then
                         --plr.Character:MoveTo(br.PrimaryPart.Position)
-                        if not br.PrimaryPart:FindFirstChildOfClass("ProximityPrompt") then continue end
-                        repeat fireproximityprompt(br.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")) task.wait() until br.Parent ~= v
-                        local Event = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_net@0.2.0"].net["RE/BG_ReturnToBase"]
-                        Event:FireServer()
-                        task.wait(1)
+                        local prompt = br.PrimaryPart and br.PrimaryPart:FindFirstChildOfClass("ProximityPrompt")
+                        if prompt then
+                            repeat fireproximityprompt(prompt) task.wait() until br.Parent ~= v
+                            local Event = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_net@0.2.0"].net["RE/BG_ReturnToBase"]
+                            Event:FireServer()
+                            task.wait(1)
+                        end
                     end
                 end
 

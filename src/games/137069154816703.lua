@@ -20,19 +20,13 @@ return function(section, data)
                 for _, br in pairs(workspace.EntitiesFolder:GetChildren()) do
                     plr.Character:MoveTo(Vector3.new(-2494, 4, -726))
                     task.wait(0.5)
-                    if not br:GetAttribute("SpawnZone") == 22 then
-                        continue
+                    if tostring(br:GetAttribute("SpawnZone")) == "22" and br.PrimaryPart then
+                        plr.Character:MoveTo(br.PrimaryPart.Position)
+                        task.wait()
+                        repeat fireproximityprompt(br.PrimaryPart.TakeBrainrotPrompt) task.wait() until not br.PrimaryPart or br.PrimaryPart:FindFirstChild("Attachment")
+                        plr.Character:MoveTo(Vector3.new(77, 4, -729))
+                        task.wait(1)
                     end
-
-                    if not br.PrimaryPart then
-                        continue
-                    end
-
-                    plr.Character:MoveTo(br.PrimaryPart.Position)
-                    task.wait()
-                    repeat fireproximityprompt(br.PrimaryPart.TakeBrainrotPrompt) task.wait() until not br.PrimaryPart or br.PrimaryPart:FindFirstChild("Attachment")
-                    plr.Character:MoveTo(Vector3.new(77, 4, -729))
-                    task.wait(1)
                 end
                 task.wait()
             end

@@ -57,17 +57,15 @@ return function(section, data)
 
                         if prompt then
                             repeat fireproximityprompt(prompt) task.wait() until not br or br.Parent ~= celestial
-                        else
-                            continue
+
+                            task.wait(0.5)
+
+                            tp(Vector3.new(343, 2, -15))
+                            task.wait(2)
+
+                            tp(Vector3.new(345, 19, 2242))
+                            task.wait(1)
                         end
-
-                        task.wait(0.5)
-
-                        tp(Vector3.new(343, 2, -15))
-                        task.wait(2)
-
-                        tp(Vector3.new(345, 19, 2242))
-                        task.wait(1)
                     end
                 end
 
@@ -84,17 +82,15 @@ return function(section, data)
 
                         if prompt then
                             repeat fireproximityprompt(prompt) task.wait() until not br or br.Parent ~= secret
-                        else
-                            continue
+
+                            task.wait(0.5)
+
+                            tp(Vector3.new(343, 2, -15))
+                            task.wait(2)
+
+                            tp(Vector3.new(353, 2, 2092))
+                            task.wait(1)
                         end
-
-                        task.wait(0.5)
-
-                        tp(Vector3.new(343, 2, -15))
-                        task.wait(2)
-
-                        tp(Vector3.new(353, 2, 2092))
-                        task.wait(1)
                     end
                 end
 

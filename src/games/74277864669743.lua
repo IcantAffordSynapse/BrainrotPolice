@@ -27,19 +27,21 @@ return function(section, data)
 
             while env.Farming do
                 for _, v in pairs(workspace.Brainrots:GetChildren()) do
-                    if v:GetAttribute("Rarity") ~= "ADMIN"
-                    and v:GetAttribute("Rarity") ~= "Lucky"
-                    and v:GetAttribute("Rarity") ~= "Ascendant"
-                    and v:GetAttribute("Rarity") ~= "Transcendent"
-                    and v:GetAttribute("Rarity") ~= "OG" then
-                        continue
-                    end
+                    local rarity = v:GetAttribute("Rarity")
+                    local wanted = rarity == "ADMIN"
+                        or rarity == "Lucky"
+                        or rarity == "Ascendant"
+                        or rarity == "Transcendent"
+                        or rarity == "OG"
 
-                    if v.PrimaryPart then
+                    if wanted and v.PrimaryPart then
                         plr.Character:MoveTo(v.PrimaryPart.Position)
-                        if v:FindFirstChildOfClass("Model"):FindFirstChildOfClass("MeshPart"):FindFirstChildOfClass("ProximityPrompt") then
+                        local model = v:FindFirstChildOfClass("Model")
+                        local mesh = model and model:FindFirstChildOfClass("MeshPart")
+                        local prompt = mesh and mesh:FindFirstChildOfClass("ProximityPrompt")
+                        if prompt then
                             repeat
-                                fireproximityprompt(v:FindFirstChildOfClass("Model"):FindFirstChildOfClass("MeshPart"):FindFirstChildOfClass("ProximityPrompt"))
+                                fireproximityprompt(prompt)
                                 task.wait()
                             until not v or v.Parent ~= workspace.Brainrots
                             task.wait()
