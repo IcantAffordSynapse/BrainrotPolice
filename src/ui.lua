@@ -19,6 +19,47 @@ local TabList = MainFrame.tablist
 
 local HideButton = Topbar.hidebtn
 
+-- =========================================================
+--  DYNAMICALLY GENERATING THE TOOLS TAB AND FRAME
+-- =========================================================
+-- Create the Frame Container for Tools
+local toolsFrame = Instance.new("ScrollingFrame")
+toolsFrame.Name = "toolsFrame"
+toolsFrame.Size = UDim2.new(1, 0, 1, 0)
+toolsFrame.Position = UDim2.new(0.5, 0, 1, 0) -- Hidden by default
+toolsFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+toolsFrame.BackgroundTransparency = 1
+toolsFrame.BorderSizePixel = 0
+toolsFrame.ScrollBarThickness = 2
+toolsFrame.Visible = false
+toolsFrame.Parent = SectionContainers
+
+-- Add Layout to Tools Frame to stack buttons nicely
+local uiListLayout = Instance.new("UIListLayout")
+uiListLayout.Padding = UDim.new(0, 5)
+uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+uiListLayout.Parent = toolsFrame
+
+local uiPadding = Instance.new("UIPadding")
+uiPadding.PaddingTop = UDim.new(0, 10)
+uiPadding.PaddingLeft = UDim.new(0, 10)
+uiPadding.PaddingRight = UDim.new(0, 10)
+uiPadding.Parent = toolsFrame
+
+-- Create the Tab Button by copying an existing template tab button (e.g., SettingsTab)
+local ToolsTab = TabList:FindFirstChild("SettingsTab"):Clone()
+ToolsTab.Name = "ToolsTab"
+ToolsTab.BackgroundTransparency = 1 -- Default state unselected
+ToolsTab.Parent = TabList
+
+-- Safely look for TextLabels inside your tab design to update it to "Tools"
+for _, child in ipairs(ToolsTab:GetChildren()) do
+    if child:IsA("TextLabel") then
+        child.Text = "Tools"
+    end
+end
+
+-- Assemble the Sections table using our newly injected instances
 local Sections = {
     Home = {
         TabBtn = TabList.HomeTab,
@@ -33,6 +74,11 @@ local Sections = {
     GamesList = {
         TabBtn = TabList.GameslistTab,
         Container = SectionContainers.gamelistFrame
+    },
+
+    Tools = {
+        TabBtn = ToolsTab,
+        Container = toolsFrame
     },
 
     Settings = {
@@ -198,3 +244,32 @@ elements:Toggle("Auto Rejoin (when kicked)", Sections.Settings.Container, dec1.s
     writefile("BrainrotPolice/Config.json", httpservice:JSONEncode(dec))
     getgenv().autorjjjj = v
 end)
+
+-- =========================================================
+--  LOAD LUA SCRIPTS FROM "Tools" FOLDER INTO NEW TAB
+-- =========================================================
+if makefolder and not isfolder("Tools") then
+    makefolder("Tools")
+end
+
+local listfiles = listfiles or list_files
+if listfiles then
+    local files = listfiles("Tools")
+    for _, filePath in ipairs(files) do
+        if filePath:sub(-4):lower() == ".lua" then
+            local fileName = filePath:match("^.+/(.+)$") or filePath:match("^.+\\(.+)$") or filePath
+            local cleanName = fileName:sub(1, -5) -- Strip out ".lua"
+
+            -- Uses elements dynamic game button layout to structure custom tools clean
+            elements:addGame(Sections.Tools.Container, cleanName, "Execute Tool", function()
+                local fileContent = readfile(filePath)
+                local func, err = loadstring(fileContent)
+                if func then 
+                    task.spawn(func) 
+                else 
+                    warn("Error in " .. cleanName .. ": " .. tostring(err)) 
+                end
+            end)
+        end
+    end
+end
