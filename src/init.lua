@@ -34,6 +34,35 @@ function env.setconfig(key, value)
     writefile("BrainrotPolice/Config.json", httpservice:JSONEncode(dec))
 end
 
+env.GitHubToolsList = {}
+
+local function fetchToolsList()
+    local httpservice = game:GetService("HttpService")
+    local apiURL = "https://api.github.com/repos/IcantAffordSynapse/BrainrotPolice/contents/src/Tools"
+    
+    local success, response = pcall(function()
+        return game:HttpGet(apiURL)
+    end)
+    
+    if success and response ~= "404: Not Found" then
+        local decodeSuccess, filesData = pcall(function()
+            return httpservice:JSONDecode(response)
+        end)
+        
+        if decodeSuccess and type(filesData) == "table" then
+            for _, fileObj in ipairs(filesData) do
+                if fileObj.type == "file" and fileObj.name:sub(-4):lower() == ".lua" then
+                    table.insert(env.GitHubToolsList, fileObj.name)
+                end
+            end
+        end
+    else
+        warn("BrainrotPolice | Failed to index GitHub tools folder via API.")
+    end
+end
+
+task.spawn(fetchToolsList)
+
 game:GetService("GuiService").ErrorMessageChanged:Connect(function()
     if env.autorjjjj then
         game:GetService("TeleportService"):Teleport(game.PlaceId)
