@@ -19,14 +19,10 @@ local TabList = MainFrame.tablist
 
 local HideButton = Topbar.hidebtn
 
--- =========================================================
---  DYNAMICALLY GENERATING THE TOOLS TAB AND FRAME
--- =========================================================
--- Create the Frame Container for Tools
 local toolsFrame = Instance.new("ScrollingFrame")
 toolsFrame.Name = "toolsFrame"
 toolsFrame.Size = UDim2.new(1, 0, 1, 0)
-toolsFrame.Position = UDim2.new(0.5, 0, 1, 0) -- Hidden by default
+toolsFrame.Position = UDim2.new(0.5, 0, 1, 0)
 toolsFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 toolsFrame.BackgroundTransparency = 1
 toolsFrame.BorderSizePixel = 0
@@ -46,20 +42,17 @@ uiPadding.PaddingLeft = UDim.new(0, 10)
 uiPadding.PaddingRight = UDim.new(0, 10)
 uiPadding.Parent = toolsFrame
 
--- Create the Tab Button by copying an existing template tab button (e.g., SettingsTab)
 local ToolsTab = TabList:FindFirstChild("SettingsTab"):Clone()
 ToolsTab.Name = "ToolsTab"
-ToolsTab.BackgroundTransparency = 1 -- Default state unselected
+ToolsTab.BackgroundTransparency = 1
 ToolsTab.Parent = TabList
 
--- Safely look for TextLabels inside your tab design to update it to "Tools"
 for _, child in ipairs(ToolsTab:GetChildren()) do
     if child:IsA("TextLabel") then
         child.Text = "Tools"
     end
 end
 
--- Assemble the Sections table using our newly injected instances
 local Sections = {
     Home = {
         TabBtn = TabList.HomeTab,
@@ -176,7 +169,7 @@ Sections.Home.Container.bugsLabel.Text = Sections.Home.Container.bugsLabel.Text:
 Sections.Home.Container.discan.Text = Sections.Home.Container.discan.Text:gsub("redacted", "discord.gg/vaehz")
 Sections.Home.Container.ythead.Text = Sections.Home.Container.ythead.Text:gsub("redacted", "YouTube")
 Sections.Home.Container.execLabel.Text = "Executor: " .. getexec()
-Sections.Home.Container.versionLabel.Text = "Version: 0.34 BETA"
+Sections.Home.Container.versionLabel.Text = "Version: 0.33 BETA"
 
 
 local ok, gamePath = pcall(function()
@@ -245,31 +238,28 @@ elements:Toggle("Auto Rejoin (when kicked)", Sections.Settings.Container, dec1.s
     getgenv().autorjjjj = v
 end)
 
--- =========================================================
---  LOAD LUA SCRIPTS FROM "Tools" FOLDER INTO NEW TAB
--- =========================================================
-if makefolder and not isfolder("Tools") then
-    makefolder("Tools")
-end
+task.defer(function()
+    local toolsList = getgenv().GitHubToolsList or {}
+    
+    for _, fullFileName in ipairs(toolsList) do
+        local cleanName = fullFileName:sub(1, -5)
+        local toolUrl = getgitpath("src") .. "Tools/" .. fullFileName
 
-local listfiles = listfiles or list_files
-if listfiles then
-    local files = listfiles("Tools")
-    for _, filePath in ipairs(files) do
-        if filePath:sub(-4):lower() == ".lua" then
-            local fileName = filePath:match("^.+/(.+)$") or filePath:match("^.+\\(.+)$") or filePath
-            local cleanName = fileName:sub(1, -5) -- Strip out ".lua"
-
-            -- Uses elements dynamic game button layout to structure custom tools clean
-            elements:addGame(Sections.Tools.Container, cleanName, "Execute Tool", function()
-                local fileContent = readfile(filePath)
-                local func, err = loadstring(fileContent)
-                if func then 
-                    task.spawn(func) 
-                else 
-                    warn("Error in " .. cleanName .. ": " .. tostring(err)) 
-                end
+        elements:addGame(Sections.Tools.Container, cleanName, "Tool", function()
+            local success, scriptContent = pcall(function()
+                return game:HttpGet(toolUrl)
             end)
-        end
+
+            if success and scriptContent and scriptContent ~= "404: Not Found" then
+                local func, err = loadstring(scriptContent)
+                if func then
+                    task.spawn(func)
+                else
+                    warn("Syntax error inside " .. cleanName .. ": " .. tostring(err))
+                end
+            else
+                warn("Failed to download script data for: " .. cleanName)
+            end
+        end)
     end
-end
+end)
