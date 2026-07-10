@@ -54,19 +54,22 @@ return function(section, data)
 
             while getgenv().Farming do
                 local char = player.Character
-                if not char then continue end
+                local zone = getgenv().ChosenZone
+                local objects = zone and zone:FindFirstChild("Objects")
 
-                for _, brainrot in pairs(getgenv().ChosenZone.Objects:GetChildren()) do
-                    if not getgenv().Farming then return end
+                if char and objects then
+                    for _, brainrot in pairs(objects:GetChildren()) do
+                        if not getgenv().Farming then return end
 
-                    char:MoveTo(brainrot.PrimaryPart.Position)
-                    repeat
-                        fireproximityprompt(brainrot.ProximityPrompt)
-                        task.wait()
-                    until brainrot == nil or brainrot.Parent ~= getgenv().ChosenZone.Objects
+                        char:MoveTo(brainrot.PrimaryPart.Position)
+                        repeat
+                            fireproximityprompt(brainrot.ProximityPrompt)
+                            task.wait()
+                        until brainrot == nil or brainrot.Parent ~= objects
 
-                    char:MoveTo(workspace.Bases[player.Name].Root.Position)
-                    task.wait(0.5)
+                        char:MoveTo(workspace.Bases[player.Name].Root.Position)
+                        task.wait(0.5)
+                    end
                 end
 
                 task.wait(1)
@@ -88,18 +91,19 @@ return function(section, data)
 
             while getgenv().Selling do
                 local char = player.Character
-                if not char then continue end
-
-                for _, brainrot in pairs(player.Backpack:GetChildren()) do
-                    if brainrot.Name == "Bat" then continue end
-                    spawn(function()
-                        pcall(function()
-                            if parseValue(brainrot.Handle.ObjectInfo.Value.ValueLabel.Text) <= getgenv().MaxPrice then
-                                local Event = game:GetService("ReplicatedStorage").Shared.Classes.RemoteFunction.Remotes.EntityShared_SellEntity
-                                Event:InvokeServer(brainrot.Name)
-                            end
-                        end)
-                    end)
+                if char then
+                    for _, brainrot in pairs(player.Backpack:GetChildren()) do
+                        if brainrot.Name ~= "Bat" then
+                            spawn(function()
+                                pcall(function()
+                                    if parseValue(brainrot.Handle.ObjectInfo.Value.ValueLabel.Text) <= getgenv().MaxPrice then
+                                        local Event = game:GetService("ReplicatedStorage").Shared.Classes.RemoteFunction.Remotes.EntityShared_SellEntity
+                                        Event:InvokeServer(brainrot.Name)
+                                    end
+                                end)
+                            end)
+                        end
+                    end
                 end
 
                 task.wait(3)

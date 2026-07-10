@@ -26,13 +26,14 @@ return function(section, data)
                     for _,v in pairs(divines:GetChildren()) do
                         if v:IsA("Model") then
                             local prp = v.PrimaryPart
-                            if not prp then continue end
-                            plr.Character:MoveTo(prp.Position)
-                            repeat fireproximityprompt(prp.ProximityPrompt) task.wait() until not v or v.Parent ~= divines
-                            local br = plr.Character:WaitForChild("StackItem")
-                            plr.Character:MoveTo(workspace.Zones.BikeSpawn.Position)
-                            repeat task.wait() until not br or br.Parent ~= plr.Character
-                            task.wait(0.1)
+                            if prp then
+                                plr.Character:MoveTo(prp.Position)
+                                repeat fireproximityprompt(prp.ProximityPrompt) task.wait() until not v or v.Parent ~= divines
+                                local br = plr.Character:WaitForChild("StackItem")
+                                plr.Character:MoveTo(workspace.Zones.BikeSpawn.Position)
+                                repeat task.wait() until not br or br.Parent ~= plr.Character
+                                task.wait(0.1)
+                            end
                         end
                     end
                     plr.Character:MoveTo(Vector3.new(-3394, 1450, 6269))
@@ -40,13 +41,14 @@ return function(section, data)
                     for _,v in pairs(celestial:GetChildren()) do
                         if v:IsA("Model") then
                             local prp = v.PrimaryPart
-                            if not prp then continue end
-                            plr.Character:MoveTo(prp.Position)
-                            repeat fireproximityprompt(prp.ProximityPrompt) task.wait() until not v or v.Parent ~= celestial
-                            local br = plr.Character:WaitForChild("StackItem")
-                            plr.Character:MoveTo(workspace.Zones.BikeSpawn.Position)
-                            repeat task.wait() until not br or br.Parent ~= plr.Character
-                            task.wait(0.1)
+                            if prp then
+                                plr.Character:MoveTo(prp.Position)
+                                repeat fireproximityprompt(prp.ProximityPrompt) task.wait() until not v or v.Parent ~= celestial
+                                local br = plr.Character:WaitForChild("StackItem")
+                                plr.Character:MoveTo(workspace.Zones.BikeSpawn.Position)
+                                repeat task.wait() until not br or br.Parent ~= plr.Character
+                                task.wait(0.1)
+                            end
                         end
                     end
                     plr.Character:MoveTo(Vector3.new(-3394, 1450, 4732))
@@ -54,13 +56,14 @@ return function(section, data)
                     for _,v in pairs(secret:GetChildren()) do
                         if v:IsA("Model") then
                             local prp = v.PrimaryPart
-                            if not prp then continue end
-                            plr.Character:MoveTo(prp.Position)
-                            repeat fireproximityprompt(prp.ProximityPrompt) task.wait() until not v or v.Parent ~= secret
-                            local br = plr.Character:WaitForChild("StackItem")
-                            plr.Character:MoveTo(workspace.Zones.BikeSpawn.Position)
-                            repeat task.wait() until not br or br.Parent ~= plr.Character
-                            task.wait(0.1)
+                            if prp then
+                                plr.Character:MoveTo(prp.Position)
+                                repeat fireproximityprompt(prp.ProximityPrompt) task.wait() until not v or v.Parent ~= secret
+                                local br = plr.Character:WaitForChild("StackItem")
+                                plr.Character:MoveTo(workspace.Zones.BikeSpawn.Position)
+                                repeat task.wait() until not br or br.Parent ~= plr.Character
+                                task.wait(0.1)
+                            end
                         end
                     end
                 end)

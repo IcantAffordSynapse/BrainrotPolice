@@ -84,11 +84,11 @@ return function(section, data)
         while env.Collect do
             for i, v in pairs(plrPlot.Pads:GetChildren()) do
                 firetouchinterest(plr.Character.Head, v.CollectPart, true)
-                task.wait()
+                task.wait(0.2)
                 firetouchinterest(plr.Character.Head, v.CollectPart, false)
             end
 
-            task.wait(0.1)
+            task.wait(3)
         end
     end)
 end

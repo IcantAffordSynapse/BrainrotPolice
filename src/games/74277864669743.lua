@@ -27,19 +27,21 @@ return function(section, data)
 
             while env.Farming do
                 for _, v in pairs(workspace.Brainrots:GetChildren()) do
-                    if v:GetAttribute("Rarity") ~= "ADMIN"
-                    and v:GetAttribute("Rarity") ~= "Lucky"
-                    and v:GetAttribute("Rarity") ~= "Ascendant"
-                    and v:GetAttribute("Rarity") ~= "Transcendent"
-                    and v:GetAttribute("Rarity") ~= "OG" then
-                        continue
-                    end
+                    local rarity = v:GetAttribute("Rarity")
+                    local wanted = rarity == "ADMIN"
+                        or rarity == "Lucky"
+                        or rarity == "Ascendant"
+                        or rarity == "Transcendent"
+                        or rarity == "OG"
 
-                    if v.PrimaryPart then
+                    if wanted and v.PrimaryPart then
                         plr.Character:MoveTo(v.PrimaryPart.Position)
-                        if v:FindFirstChildOfClass("Model"):FindFirstChildOfClass("MeshPart"):FindFirstChildOfClass("ProximityPrompt") then
+                        local model = v:FindFirstChildOfClass("Model")
+                        local mesh = model and model:FindFirstChildOfClass("MeshPart")
+                        local prompt = mesh and mesh:FindFirstChildOfClass("ProximityPrompt")
+                        if prompt then
                             repeat
-                                fireproximityprompt(v:FindFirstChildOfClass("Model"):FindFirstChildOfClass("MeshPart"):FindFirstChildOfClass("ProximityPrompt"))
+                                fireproximityprompt(prompt)
                                 task.wait()
                             until not v or v.Parent ~= workspace.Brainrots
                             task.wait()
@@ -63,7 +65,7 @@ return function(section, data)
             while env.FarmWings do
                 local Event = game:GetService("ReplicatedStorage").Libraries.Packet.RemoteEvent
                 Event:FireServer(buffer.fromstring("\x15\x01"))
-                task.wait()
+                task.wait(1)
             end
         else
             env.FarmWings = false
@@ -91,18 +93,21 @@ return function(section, data)
             env.AutoCollect = true
 
             while env.AutoCollect do
+                local touched = false
                 for _, v in pairs(workspace.Plots:GetChildren()) do
                     if v:GetAttribute("Owner") == plr.UserId then
                         for i, pod in pairs(v.Podiums:GetChildren()) do
                             if pod:FindFirstChild("Collect") then
                                 firetouchinterest(plr.Character.Head, pod.Collect, true)
-                                task.wait()
+                                task.wait(0.2)
                                 firetouchinterest(plr.Character.Head, pod.Collect, false)
+                                touched = true
+                                task.wait(0.5)
                             end
                         end
                     end
                 end
-                task.wait(2)
+                task.wait(touched and 5 or 2)
             end
         else
             env.AutoCollect = false

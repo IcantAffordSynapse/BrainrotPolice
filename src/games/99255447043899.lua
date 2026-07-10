@@ -29,7 +29,7 @@ return function(section, data)
                 Event:FireServer()
 
                 task.wait(1)
-                
+
                 local brlist = plr.Backpack:GetChildren()
 
                 local Event = game:GetService("ReplicatedStorage").Events.SellAllBrainrots
@@ -61,9 +61,8 @@ return function(section, data)
                 local bestbr = nil
                 local mostval = 0
                 for i, v in pairs(workspace.Locations.End.Brainrots:GetChildren()) do
-                    if v.MoneyPerSecond.Value > mostval then
-                        -- p.s. what the fuck do u need to pay 600 robux for a brainrot for, bullshit cunts fuck u dogs cunts
-                        if v.PrimaryPart.ProximityPrompt.ActionText == "STEAL OP" then continue end
+                    if v.MoneyPerSecond.Value > mostval
+                        and v.PrimaryPart.ProximityPrompt.ActionText ~= "STEAL OP" then
                         mostval = v.MoneyPerSecond.Value
                         bestbr = v
                     end

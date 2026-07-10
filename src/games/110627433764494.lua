@@ -53,24 +53,22 @@ return function(section, data)
                     if v:GetAttribute("OwnerUserId") == userId then
                         local hasBr = false
                         for _, br in pairs(v.Slots:GetChildren()) do
-                            if not br:FindFirstChild("PlacedBrainrot") then
-                                continue
+                            if br:FindFirstChild("PlacedBrainrot") then
+                                hasBr = true
+
+                                plr.Character:MoveTo(br.PlacedBrainrot.PrimaryPart.Position)
+
+                                repeat
+                                    fireproximityprompt(br.StealPrompt)
+                                    task.wait()
+                                until not br.StealPrompt.Enabled
+
+                                plr.Character:MoveTo(v.CollectAllZone.Position)
+
+                                task.wait(1)
+
+                                complete = true
                             end
-
-                            hasBr = true
-
-                            plr.Character:MoveTo(br.PlacedBrainrot.PrimaryPart.Position)
-
-                            repeat
-                                fireproximityprompt(br.StealPrompt)
-                                task.wait()
-                            until not br.StealPrompt.Enabled
-
-                            plr.Character:MoveTo(v.CollectAllZone.Position)
-
-                            task.wait(1)
-
-                            complete = true
                         end
                         if not hasBr then
                             complete = true

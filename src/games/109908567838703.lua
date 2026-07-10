@@ -23,13 +23,11 @@ return function(section, data)
             getgenv().AutoMoney = true
 
             while getgenv().AutoMoney do
-                task.spawn(function()
-                    local Event = game:GetService("ReplicatedStorage").ModifiedPackages.Packet.RemoteEvent
-                    Event:FireServer(
-                        buffer.fromstring("\x0E")
-                    )
-                end)
-                task.wait()
+                local Event = game:GetService("ReplicatedStorage").ModifiedPackages.Packet.RemoteEvent
+                Event:FireServer(
+                    buffer.fromstring("\x0E")
+                )
+                task.wait(1)
             end
         else
             getgenv().AutoMoney = false

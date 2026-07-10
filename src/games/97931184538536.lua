@@ -28,18 +28,19 @@ return function(section, data)
             pcall(function()
                 for i, br in pairs(Brainrots:GetChildren()) do
                     if br:GetAttribute("FieldName") == "CelestialField" or br:GetAttribute("FieldName") == "OGField" then
-                        if br:GetAttribute("Traits") == "VIP" then continue end
-                        plr.Character:MoveTo(br.Position)
-                        repeat
-                            fireproximityprompt(br:FindFirstChildOfClass("ProximityPrompt"))
+                        if br:GetAttribute("Traits") ~= "VIP" then
+                            plr.Character:MoveTo(br.Position)
+                            repeat
+                                fireproximityprompt(br:FindFirstChildOfClass("ProximityPrompt"))
+                                task.wait()
+                            until not br or br.Parent ~= Brainrots
                             task.wait()
-                        until not br or br.Parent ~= Brainrots
-                        task.wait()
-                        repeat
-                            plr.Character:MoveTo(Vector3.new(69, 30, 162))
+                            repeat
+                                plr.Character:MoveTo(Vector3.new(69, 30, 162))
+                                task.wait()
+                            until not plr.Character:FindFirstChild("HeldFieldBrainrot")
                             task.wait()
-                        until not plr.Character:FindFirstChild("HeldFieldBrainrot")
-                        task.wait()
+                        end
 
                     end
                 end
@@ -57,19 +58,19 @@ return function(section, data)
         while env.Farminga do
             pcall(function()
                 for i, br in pairs(Brainrots:GetChildren()) do
-                    if br:GetAttribute("FieldName") == nil then continue end
-                    if br:GetAttribute("Traits") == "VIP" then continue end
-                    plr.Character:MoveTo(br.Position)
-                    repeat
-                        fireproximityprompt(br:FindFirstChildOfClass("ProximityPrompt"))
+                    if br:GetAttribute("FieldName") ~= nil and br:GetAttribute("Traits") ~= "VIP" then
+                        plr.Character:MoveTo(br.Position)
+                        repeat
+                            fireproximityprompt(br:FindFirstChildOfClass("ProximityPrompt"))
+                            task.wait()
+                        until not br or br.Parent ~= Brainrots
                         task.wait()
-                    until not br or br.Parent ~= Brainrots
-                    task.wait()
-                    repeat
-                        plr.Character:MoveTo(Vector3.new(69, 30, 162))
+                        repeat
+                            plr.Character:MoveTo(Vector3.new(69, 30, 162))
+                            task.wait()
+                        until not plr.Character:FindFirstChild("HeldFieldBrainrot")
                         task.wait()
-                    until not plr.Character:FindFirstChild("HeldFieldBrainrot")
-                    task.wait()
+                    end
                 end
             end)
 

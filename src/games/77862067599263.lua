@@ -101,20 +101,20 @@ return function(section, data)
         while env.Collect do
             for i, v in pairs(workspace["Plot_" .. plr.Name].Floor1.Slots:GetChildren()) do
                 firetouchinterest(plr.Character.Head, v.CollectTouch, true)
-                task.wait()
+                task.wait(0.2)
                 firetouchinterest(plr.Character.Head, v.CollectTouch, false)
             end
             for i, v in pairs(workspace["Plot_" .. plr.Name].Floor2.Slots:GetChildren()) do
                 firetouchinterest(plr.Character.Head, v.CollectTouch, true)
-                task.wait()
+                task.wait(0.2)
                 firetouchinterest(plr.Character.Head, v.CollectTouch, false)
             end
             for i, v in pairs(workspace["Plot_" .. plr.Name].Floor3.Slots:GetChildren()) do
                 firetouchinterest(plr.Character.Head, v.CollectTouch, true)
-                task.wait()
+                task.wait(0.2)
                 firetouchinterest(plr.Character.Head, v.CollectTouch, false)
             end
-            task.wait(0.1)
+            task.wait(3)
         end
 
     end)

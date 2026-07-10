@@ -1,11 +1,16 @@
 if not game:IsLoaded() then
     game.Loaded:Wait()
 end
-local env = getgenv()
 
-if not isfolder("BrainrotPolice") then makefolder("BrainrotPolice") end
-if not isfile("BrainrotPolice/Config.json") then
-    writefile("BrainrotPolice/Config.json", game:GetService("HttpService"):JSONEncode({
+local env = getgenv()
+local httpservice = game:GetService("HttpService")
+
+if typeof(isfolder) == "function" and typeof(makefolder) == "function" and not isfolder("BrainrotPolice") then
+    makefolder("BrainrotPolice")
+end
+
+if typeof(isfile) == "function" and typeof(writefile) == "function" and not isfile("BrainrotPolice/Config.json") then
+    writefile("BrainrotPolice/Config.json", httpservice:JSONEncode({
         settings = {
             auto_rejoin_on_kick = false,
             disable_3d_rendering = false
@@ -14,21 +19,46 @@ if not isfile("BrainrotPolice/Config.json") then
 end
 
 function env.import(id)
-    return game:GetObjects(id)[1]
+    local ok, objects = pcall(function()
+        return game:GetObjects(id)
+    end)
+
+    if ok and objects then
+        return objects[1]
+    end
+
+    warn("[BrainrotPolice] Failed to import asset: " .. tostring(id))
+    return nil
 end
 
 function env.getgitpath(where)
-    local mainBuild = "https://raw.githubusercontent.com/IcantAffordSynapse/BrainrotPolice/refs/heads/main/"
-    if where == "src" then
-        return mainBuild .. "src/"
-    elseif where == "games" then
-        return mainBuild .. "src/games/"
-    end
+    local mainBuild = "https://raw.githubusercontent.com/Xaric24/BrainrotPolice/refs/heads/main/"
+    local paths = {
+        src = mainBuild .. "src/",
+        games = mainBuild .. "src/games/"
+    }
+
+    return paths[where] or mainBuild
 end
 
 function env.setconfig(key, value)
-    local httpservice = game:GetService("HttpService")
-    local dec = httpservice:JSONDecode(readfile("BrainrotPolice/Config.json"))
+    if typeof(readfile) ~= "function" or typeof(writefile) ~= "function" then
+        return
+    end
+
+    local ok, dec = pcall(function()
+        return httpservice:JSONDecode(readfile("BrainrotPolice/Config.json"))
+    end)
+
+    if not ok or type(dec) ~= "table" then
+        dec = {
+            settings = {
+                auto_rejoin_on_kick = false,
+                disable_3d_rendering = false
+            }
+        }
+    end
+
     dec[tostring(game.PlaceId)] = dec[tostring(game.PlaceId)] or {}
     dec[tostring(game.PlaceId)][key] = value
     writefile("BrainrotPolice/Config.json", httpservice:JSONEncode(dec))
@@ -40,10 +70,25 @@ game:GetService("GuiService").ErrorMessageChanged:Connect(function()
     end
 end)
 
-game:GetService("GuiService"):SetGameplayPausedNotificationEnabled(false)
+pcall(function()
+    game:GetService("GuiService"):SetGameplayPausedNotificationEnabled(false)
+end)
 
-loadstring(game:HttpGet(getgitpath("src").."ui.lua"))()
+local ok, uiSource = pcall(function()
+    return game:HttpGet(getgitpath("src") .. "ui.lua")
+end)
 
-if queue_on_teleport then
-    queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/IcantAffordSynapse/BrainrotPolice/refs/heads/main/src/init.lua"))()')
+if ok and uiSource and #uiSource > 0 then
+    local loadedUi, err = loadstring(uiSource)
+    if loadedUi then
+        loadedUi()
+    else
+        warn("[BrainrotPolice] Failed to load UI: " .. tostring(err))
+    end
+else
+    warn("[BrainrotPolice] Failed to download UI.")
+end
+
+if typeof(queue_on_teleport) == "function" then
+    queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/Xaric24/BrainrotPolice/refs/heads/main/src/init.lua"))()')
 end

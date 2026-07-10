@@ -22,35 +22,47 @@ return function(section, data)
         if not v then return end
 
         while env.Farming do
-            game:GetService("ReplicatedStorage").SharedModules.Network.RequestPendingFlight:FireServer()
+            local replicatedStorage = game:GetService("ReplicatedStorage")
+            local sharedModules = replicatedStorage:FindFirstChild("SharedModules")
+            local network = sharedModules and sharedModules:FindFirstChild("Network")
 
-            task.wait(1)
+            if network then
+                local requestPending = network:FindFirstChild("RequestPendingFlight")
+                local requestActive = network:FindFirstChild("RequestActiveFlight")
+                local claimFlight = network:FindFirstChild("ClaimFlight")
 
-            local vsp = Vector3.new(-347.2116394043, 89.037544250488, 25.892095565796)
-            local GameCore = require(game:GetService("ReplicatedStorage").GameCore)
-            local GROUND_Y = GameCore.GameConfig.GROUND_Y
-            local FORWARD_VECTOR = GameCore.GameConfig.FORWARD_VECTOR
+                if requestPending and requestActive and claimFlight then
+                    requestPending:FireServer()
+                    task.wait(1)
 
-            local results = game:GetService("ReplicatedStorage").SharedModules.Network.RequestActiveFlight:InvokeServer({
-                plotIndex = 3,
-                intensity = 1,
-                player = plr,
-                flightUID = require(game:GetService("ReplicatedStorage").UtilityCore).StringUtility.GenerateUID(),
-                serverFloors = 10000000,
-                visualStartPos = vsp,
-                startTime = GameCore.GetSycnedTime(),
-                startPos = Vector3.new(-347.2116394043, 85.050003051758, 25.892095565796),
-                serverStrength = 10000000
-            })
+                    local vsp = Vector3.new(-347.2116394043, 89.037544250488, 25.892095565796)
+                    local GameCore = require(replicatedStorage.GameCore)
 
-            if not results then continue end
+                    local results = requestActive:InvokeServer({
+                        plotIndex = 3,
+                        intensity = 1,
+                        player = plr,
+                        flightUID = require(game:GetService("ReplicatedStorage").UtilityCore).StringUtility.GenerateUID(),
+                        serverFloors = 10000000,
+                        visualStartPos = vsp,
+                        startTime = GameCore.GetSycnedTime(),
+                        startPos = Vector3.new(-347.2116394043, 85.050003051758, 25.892095565796),
+                        serverStrength = 10000000
+                    })
 
-            local chosenBrainrot = results.spawnedBrainrots[1]
+                    if results and type(results.spawnedBrainrots) == "table" and results.spawnedBrainrots[1] then
+                        local chosenBrainrot = results.spawnedBrainrots[1]
 
-            task.wait(results.timeInAir + 0.5)
+                        task.wait((tonumber(results.timeInAir) or 0) + 0.5)
 
+                        if chosenBrainrot.uid then
+                            claimFlight:InvokeServer(chosenBrainrot.uid)
+                        end
+                    end
+                end
+            end
 
-            game:GetService("ReplicatedStorage").SharedModules.Network.ClaimFlight:InvokeServer(chosenBrainrot.uid)
+            task.wait(0.1)
         end
     end)
 
