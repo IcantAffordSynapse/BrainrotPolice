@@ -37,7 +37,7 @@ return function(section)
         print("Clicked!")
     end)
 
-    elements:Textbox("This is a TextBox, section, "", function(str)
+    elements:Textbox("This is a TextBox, section", "", function(str)
         print("Typed: "..str)
     end)
 end
