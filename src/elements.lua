@@ -6,6 +6,7 @@ function stuff:Label(str, king)
     local newLabel = elements.LabelElement:Clone()
     newLabel.Text = str
     newLabel.Parent = king
+    return newLabel
 end
 
 function stuff:Button(str, king, cb)
@@ -14,6 +15,7 @@ function stuff:Button(str, king, cb)
     newBtn.Parent = king
 
     newBtn.MouseButton1Click:Connect(cb)
+    return newBtn
 end
 
 function stuff:Toggle(str, king, def, cb)
@@ -46,6 +48,7 @@ function stuff:Toggle(str, king, def, cb)
         end
         cb(isTog)
     end)
+    return newTog
 end
 
 function stuff:Textbox(str, king, def, cb)
@@ -56,6 +59,7 @@ function stuff:Textbox(str, king, def, cb)
     newTb.tbbg.Inp.FocusLost:Connect(function(ep)
         cb(newTb.tbbg.Inp.Text)
     end)
+    return newTb
 end
 
 function stuff:Unsupported(king, cb)
@@ -70,6 +74,7 @@ function stuff:Unsupported(king, cb)
     end)
 
     newUs.glbtn.MouseButton1Click:Connect(cb)
+    return newUs
 end
 
 function stuff:addGame(king, gname, gstate, cb)
@@ -112,12 +117,14 @@ function stuff:CredHead(king, txt)
     local newHead = elements.CreditHeader:Clone()
     newHead.Text = "> " .. txt
     newHead.Parent = king
+    return newHead
 end
 
 function stuff:CredPerson(king, txt)
     local newCred = elements.CreditPerson:Clone()
     newCred.Text = "      + " .. txt
     newCred.Parent = king
+    return newCred
 end
 
 return stuff
