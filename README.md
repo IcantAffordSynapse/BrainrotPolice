@@ -7,7 +7,7 @@ This is an open source little project I made for a bunch of shitty brainrot game
 https://wearentdevs.net/
 
 ```lua
-loadstring(game:HttpGet("https://loadstring.net/scripts/brainrotpolice.lua"))()
+loadstring(game:HttpGet("https://loadstring.net/raw/PSH2TOWUGP"))()
 ```
 
 ## Adding Custom Games
